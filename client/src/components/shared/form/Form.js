@@ -93,6 +93,16 @@ const Form = ({ formType, submitBtn, formTitle }) => {
                         case formType === 'register': {
                             return (
                                 <>
+                                    {(role === 'admin' || role === 'donar') && (
+                                        <InputType
+                                            labelText={"Name"}
+                                            labelFor={"forName"}
+                                            inputType={'text'}
+                                            name={'name'}
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                        />
+                                    )}
                                     <InputType
                                         labelText={"Email"}
                                         labelFor={"forEmail"}
@@ -109,16 +119,7 @@ const Form = ({ formType, submitBtn, formTitle }) => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
-                                    {(role === 'admin' || role === 'donar') && (
-                                        <InputType
-                                            labelText={"Name"}
-                                            labelFor={"forName"}
-                                            inputType={'text'}
-                                            name={'name'}
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                    )}
+
                                     {role === 'organisation' &&
                                         <InputType
                                             labelText={"Organisation Name"}

@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 
 const registerController = async (req, res) => {
-    try {        
+    try {
         const existingUser = await userModel.findOne({ email: req.body.email })
         // Validation
         if (existingUser) {
@@ -38,47 +38,62 @@ const registerController = async (req, res) => {
 
 // login Call Back
 
+
 const loginController = async (req, res) => {
     try {
-        const existingUser = await userModel.findOne({ email: req.body.email })
-        if (!existingUser) {
+        const user = await userModel.findOne({ email: req.body.email });
+        if (!user) {
             return res.status(404).send({
                 success: false,
-                message: 'Invalid Credential'
-            })
+                message: "Invalid Credentials",
+            });
         }
-        // Check role
-        if (existingUser.role !== req.body.role) {
+        //check role
+        if (user.role !== req.body.role) {
             return res.status(500).send({
                 success: false,
-                message: "role Dosn't matched"
-            })
+                message: "role dosent match",
+            });
         }
-
-        // compare password
-        const comparePassword = bcrypt.compare(req.body.password, existingUser.password)
+        //compare password
+        const comparePassword = await bcrypt.compare(
+            req.body.password,
+            user.password
+        );
         if (!comparePassword) {
             return res.status(500).send({
                 success: false,
-                message: 'Invalid Credential'
-            })
+                message: "Invalid Credentials",
+            });
         }
-        const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "1d",
+        });
         return res.status(200).send({
             success: true,
-            message: 'Login successfully',
+            message: "Login Successfully",
             token,
-            user : existingUser
-        })
+            user,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
-            message: 'Error in Login Api',
-            error
-        })
+            message: "Error In Login API",
+            error,
+        });
     }
-}
+};
+
+
+
+
+
+
+
+
+
+
 
 // Current User
 

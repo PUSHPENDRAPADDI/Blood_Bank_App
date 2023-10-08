@@ -3,8 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 
 const registerController = async (req, res) => {
-    try {
-        debugger
+    try {        
         const existingUser = await userModel.findOne({ email: req.body.email })
         // Validation
         if (existingUser) {
@@ -69,7 +68,7 @@ const loginController = async (req, res) => {
             success: true,
             message: 'Login successfully',
             token,
-            existingUser
+            user : existingUser
         })
     } catch (error) {
         console.log(error);

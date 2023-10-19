@@ -22,8 +22,8 @@ const Header = () => {
                     </div>
                     <ul className="navbar-nav flex-row">
                         <li className="nav-item mx-3">
-                            <p className="nav-link"><BiUserCircle /> Welcome {user?.name || user?.hospitalName || user?.organisationName}{" "} &nbsp;
-                                <span className='badge bg-secondary'>{user?.role}</span>
+                            <p className="nav-link"><BiUserCircle /> Welcome {(user?.name?.toUpperCase()) || user?.hospitalName || user?.organisationName}{" "} &nbsp;
+                                <span className='badge bg-secondary'>{user?.role.toUpperCase()}</span>
                             </p>
                         </li>
                         <li className="nav-item mx-3">

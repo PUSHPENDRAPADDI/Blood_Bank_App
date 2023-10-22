@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import InputType from '../form/InputType.js'
+import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
 import API from './../../../services/api.js'
 
@@ -8,15 +9,28 @@ const Modal = () => {
     const [bloodGroup, SetBloodGroup] = useState("");
     const [quantity, SetQuantity] = useState("");
     const [donarEmail, SetDonarEmail] = useState("");
-
+    const { user } = useSelector(state => state.auth)
     const handleModalSubmit = async () => {
         try {
-            if (!bloodGroup || quantity) {
+            if (!bloodGroup || !quantity) {
                 toast.error("Please Provide All Fields")
             }
-            // const { data } = await API.post('/inventory-create-inventory')
+            const { data } = await API.post('/inventory/create-inventory', {
+                donarEmail,
+                email: user?.email,
+                organisation: user?._id,
+                inventoryType,
+                bloodGroup,
+                quantity
+            })
+            if (data?.success) {
+                toast.success("New Record Created")
+                window.location.reload()
+            }
         } catch (error) {
+            toast.error(error.response.data.message)
             console.log(error);
+            window.location.reload()
         }
     }
 
@@ -43,7 +57,7 @@ const Modal = () => {
                                     />
                                     <label htmlFor="in" className='form-check-label'>In</label>
                                 </div>
-                                <div className="form-check" ms-3>
+                                <div className="form-check ms-3" >
                                     <input
                                         type="radio"
                                         name='inRadio'
@@ -56,7 +70,7 @@ const Modal = () => {
                             </div>
                             <select className="form-select" aria-label="Default select example"
                                 onChange={(e) => SetBloodGroup(e.target.value)}>
-                                <option selected>Select Bloood Group</option>
+                                <option defaultValue={'Select Bloood Group'} >Select Bloood Group</option>
                                 <option value={'O+'}>O+</option>
                                 <option value={'O-'}>O-</option>
                                 <option value={'AB+'}>AB+</option>
@@ -67,14 +81,14 @@ const Modal = () => {
                                 <option value={'B-'}>B-</option>
                             </select>
                             <InputType
-                                labelText={'Donar Email'}
-                                labelFor={'donarEmail'}
+                                labelText={inventoryType === 'in' ? 'Donar Email' : 'Hospital Email'}
+                                labelFor={inventoryType === 'in' ? 'donarEmail' : 'hospitalEmail'}
                                 inputType={'email'}
                                 value={donarEmail}
                                 onChange={(e) => SetDonarEmail(e.target.value)}
                             />
                             <InputType
-                                labelText={'Quantity'}
+                                labelText={'Quantity (ML)'}
                                 labelFor={'quantity'}
                                 inputType={'number'}
                                 value={quantity}
